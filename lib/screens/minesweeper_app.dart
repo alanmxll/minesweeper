@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:minesweeper/components/cell_widget.dart';
-import 'package:minesweeper/models/cell.dart';
-import 'package:minesweeper/models/explosion_exception.dart';
 
+import '../components/board_widget.dart';
 import '../components/result_widget.dart';
+import '../models/board.dart';
+import '../models/cell.dart';
 
 class MinesweeperApp extends StatelessWidget {
   void _restart() {
@@ -20,19 +20,6 @@ class MinesweeperApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Cell cell = Cell(row: 0, column: 0);
-    Cell neighborOne = Cell(row: 1, column: 0);
-    cell.addNeighbor(neighborOne);
-    neighborOne.undermine();
-    Cell neighborTwo = Cell(row: 1, column: 1);
-    cell.addNeighbor(neighborTwo);
-    neighborTwo.undermine();
-
-    try {
-      // cell.undermine();
-      cell.uncover();
-    } on ExplosionException {}
-
     return MaterialApp(
       home: Scaffold(
         appBar: ResultWidget(
@@ -40,8 +27,12 @@ class MinesweeperApp extends StatelessWidget {
           onRestart: () => _restart(),
         ),
         body: Container(
-          child: CellWidget(
-            cell: cell,
+          child: BoardWidget(
+            board: Board(
+              rows: 15,
+              columns: 15,
+              mines: 10,
+            ),
             onOpen: _open,
             onSwitchFlagged: _switchFlagged,
           ),
