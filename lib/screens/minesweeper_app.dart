@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:minesweeper/models/explosion_exception.dart';
 
 import '../components/board_widget.dart';
 import '../components/result_widget.dart';
 import '../models/board.dart';
 import '../models/cell.dart';
+import '../models/explosion_exception.dart';
 
 class MinesweeperApp extends StatefulWidget {
   @override
@@ -13,11 +13,7 @@ class MinesweeperApp extends StatefulWidget {
 
 class _MinesweeperAppState extends State<MinesweeperApp> {
   bool _won;
-  Board _board = Board(
-    rows: 12,
-    columns: 12,
-    mines: 3,
-  );
+  Board _board;
 
   void _restart() {
     setState(() {
@@ -57,6 +53,21 @@ class _MinesweeperAppState extends State<MinesweeperApp> {
     });
   }
 
+  Board _getBoard(double width, double height) {
+    if (_board == null) {
+      int columns = 15;
+      double cellSize = width / columns;
+      int rows = (height / cellSize).floor();
+
+      _board = Board(
+        rows: rows,
+        columns: columns,
+        mines: 50,
+      );
+    }
+    return _board;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,10 +77,18 @@ class _MinesweeperAppState extends State<MinesweeperApp> {
           onRestart: _restart,
         ),
         body: Container(
-          child: BoardWidget(
-            board: _board,
-            onOpen: _open,
-            onSwitchFlagged: _switchFlagged,
+          color: Colors.grey,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return BoardWidget(
+                board: _getBoard(
+                  constraints.maxWidth,
+                  constraints.maxHeight,
+                ),
+                onOpen: _open,
+                onSwitchFlagged: _switchFlagged,
+              );
+            },
           ),
         ),
       ),
