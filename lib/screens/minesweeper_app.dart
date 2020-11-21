@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minesweeper/models/explosion_exception.dart';
 
 import '../components/board_widget.dart';
 import '../components/result_widget.dart';
@@ -19,15 +20,41 @@ class _MinesweeperAppState extends State<MinesweeperApp> {
   );
 
   void _restart() {
-    print('Restarted');
+    setState(() {
+      _won = null;
+      _board.restart();
+    });
   }
 
   void _open(Cell cell) {
-    print('Opened');
+    if (_won != null) {
+      return;
+    }
+
+    setState(() {
+      try {
+        cell.uncover();
+        if (_board.resolved) {
+          _won = true;
+        }
+      } on ExplosionException {
+        _won = false;
+        _board.revealMines();
+      }
+    });
   }
 
   void _switchFlagged(Cell cell) {
-    print('Switched');
+    if (_won != null) {
+      return;
+    }
+
+    setState(() {
+      cell.switchFlagged();
+      if (_board.resolved) {
+        _won = true;
+      }
+    });
   }
 
   @override

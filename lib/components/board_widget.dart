@@ -20,7 +20,7 @@ class BoardWidget extends StatelessWidget {
     return Container(
       child: GridView.count(
         crossAxisCount: board.columns,
-        children: board.cells.map((c) {
+        children: board.cells.map<CellWidget>((c) {
           return CellWidget(
             cell: c,
             onOpen: onOpen,
